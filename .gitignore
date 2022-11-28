@@ -1,0 +1,5 @@
+models/*
+SubtaskA/*
+SubtaskC/*
+SubtaskB/bert-multilingual/models/*
+SubtaskB/bert-multilingual/__pycache__/*
