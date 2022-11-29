@@ -1,6 +1,7 @@
 import torch
 from transformers import BertTokenizer
 from config import config
+import pandas as pd
 
 class AfriSentiDataset(torch.utils.data.Dataset):
     '''
@@ -42,14 +43,60 @@ class AfriSentiDataset(torch.utils.data.Dataset):
             label=label
         )
         
-def get_train_val_loaders(df, train_idx, val_idx, batch_size=8):
+
+
+def get_lang_dataset():
+    '''
+    fetches dataset for each language and forms one dataset
+    also returns class weights for each class
+    '''
+    languages = ['am', 'dz', 'ha', 'ig', 'kr', 'ma', 'pcm', 'pt', 'sw', 'ts', 'twi', 'yo']
+    data = []
+
+    result = pd.DataFrame()
+    for language in languages:
+        df = pd.read_csv(f"../../SubtaskA/train/{language}_train.tsv", sep='\t', names=['text', 'label'], header=0)
+        #print(f"length of {language} data: {len(df)}")
+        if result.empty: result = df
+        else: result = pd.concat([result, df])
+        data.append(len(df))
+        
+        
+    class_c = []
+    for i in range(len(languages)):
+        class_c.extend([languages[i]]*data[i])
+
+    def get_class_dist(y):
+        class_count = {lang: 0 for lang in languages}
+        for l in y:
+            class_count[l] += 1
+        return class_count
+
+
+    class_count = [i for i in get_class_dist(class_c).values()]
+    class_weights = 1./torch.tensor(class_count, dtype=torch.float) 
+
+    print(len(result), len(class_weights))
+    return result,class_weights
+
+
+
+def get_train_val_loaders(df, train_idx, val_idx, class_weights_all, batch_size=8):
     train_df = df.iloc[train_idx]
     val_df = df.iloc[val_idx]
+
+    class_weights = [ class_weights_all[i] for i in train_idx]
+    weighted_sampler = torch.utils.data.WeightedRandomSampler(
+        weights=class_weights,
+        num_samples=len(class_weights),
+        replacement=True
+    )
 
     train_loader = torch.utils.data.DataLoader(
         AfriSentiDataset(train_df), 
         batch_size=batch_size, 
-        shuffle=True, 
+        #shuffle=True, 
+        sampler=weighted_sampler,
         num_workers=2,
         drop_last=True)
 

@@ -3,7 +3,7 @@ from config import config, seed_everything
 import pandas as pd
 import torch
 from model import BertMultiModel, loss_fn, score, multi_acc
-from dataset import get_train_val_loaders
+from dataset import get_train_val_loaders, get_lang_dataset
 import gc
 import numpy as np
 from sklearn.model_selection import StratifiedKFold
@@ -14,11 +14,10 @@ def train():
         train the model using config as hyperparameters
     '''
 
-    train_data = pd.read_csv("../multilingual_train.tsv", sep='\t', names=['text', 'label'], header=0)
+    train_data, class_weights = get_lang_dataset()
     
-    train_data = train_data[:30000]
 
-    skf = StratifiedKFold(n_splits=config['folds'], shuffle=True, random_state=config['seed'])
+    skf = StratifiedKFold(n_splits=config['folds'], shuffle=False)
     train_data['text'] = train_data['text'].astype(str)
     use_cuda = torch.cuda.is_available()
     device = torch.device("cuda" if use_cuda else "cpu")
@@ -42,7 +41,7 @@ def train():
         train_loss_epoch, val_loss_epoch = [], []
         optimizer = config['optimizer'](model.parameters(), lr=config['learning_rate'], betas=(0.9, 0.999))
         criterion = loss_fn()   
-        dataloaders_dict = get_train_val_loaders(train_data, train_idx, val_idx, config['batch_size'])
+        dataloaders_dict = get_train_val_loaders(train_data, train_idx, val_idx, class_weights, config['batch_size'])
         train_dataloader, val_dataloader = dataloaders_dict['train'], dataloaders_dict['val']
         #scheduler = torch.optim.lr_scheduler.OneCycleLR(optimizer,max_lr=0.01,total_steps=config['num_epochs'] * len(train_dataloader.dataset)//config['batch_size'])
         
