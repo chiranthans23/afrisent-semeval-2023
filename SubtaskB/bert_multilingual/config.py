@@ -5,8 +5,8 @@ import os
 import random
 
 config = {
-    "num_epochs": 4,
-    "batch_size": 32,
+    "num_epochs": 5,
+    "batch_size": 64,
     "learning_rate": 4e-5,
     "optimizer": optim.AdamW,
     'model_name': 'bert-base-multilingual-uncased',
