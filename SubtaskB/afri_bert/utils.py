@@ -25,25 +25,11 @@ def loss_fn():
     return nn.CrossEntropyLoss()
 
 
-def plot_met_curves(f1_met, loss_met, lang):
-    '''
-    plots f1 and loss curves
-    '''
-    train_val_f1_df = pd.DataFrame.from_dict(f1_met).reset_index().melt(id_vars=['index']).rename(columns={"index":"epochs"})
-    train_val_loss_df = pd.DataFrame.from_dict(loss_met).reset_index().melt(id_vars=['index']).rename(columns={"index":"epochs"})
-
-    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(20,7))
-
-    sns.lineplot(data=train_val_f1_df, x = "epochs", y="value", hue="variable",  ax=axes[0]).set_title(f'{lang}hh Train-Val F1/Epoch')
-    sns.lineplot(data=train_val_loss_df, x = "epochs", y="value", hue="variable", ax=axes[1]).set_title(f'{lang}hh Train-Val Loss/Epoch')
-    
-    plt.savefig(f'{lang}_metrics.png')
-
 
 def dump_dict(f1_met, loss_met, langu):
-    with open(f'f1_met_{langu}.pkl', 'wb') as f:
+    with open(f'./results/f1_met_{langu}.pkl', 'wb') as f:
         pickle.dump(f1_met, f)
         
-    with open(f'loss_met_{langu}.pkl', 'wb') as f:
+    with open(f'./results/loss_met_{langu}.pkl', 'wb') as f:
         pickle.dump(loss_met, f)
     

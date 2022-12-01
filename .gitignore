@@ -3,3 +3,5 @@ SubtaskA/*
 SubtaskC/*
 SubtaskB/bert_multilingual/models/*
 SubtaskB/bert_multilingual/__pycache__/*
+SubtaskB/afri_bert/models/*
+SubtaskB/afri_bert/__pycache__/*

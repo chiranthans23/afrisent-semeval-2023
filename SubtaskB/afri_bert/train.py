@@ -2,12 +2,11 @@ from tqdm import tqdm
 from config import config, seed_everything
 import pandas as pd
 import torch
-from model import BertMultiModel
+from model import AfriBertModel
 from utils import loss_fn, score, multi_acc, dump_dict
 from dataset import get_train_val_loaders2
 import gc
 import numpy as np
-from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import train_test_split
 from transformers import logging
 
@@ -46,7 +45,7 @@ def train(langu = None):
     # for fold, (train_idx, val_idx) in enumerate(skf.split(train_data, train_data.label), start=1): 
         # print(train_idx,val_idx)
         # print(f'Fold: {fold}')
-    model = BertMultiModel()
+    model = AfriBertModel()
 
     # param_optimizer = list(model.named_parameters())
     # no_decay = ['bias', 'LayerNorm.bias', 'LayerNorm.weight']
@@ -159,7 +158,7 @@ def train(langu = None):
             | Val Accuracy: {val_acc} \
             | Val Metrics (Precision, Recall, F1-Score): {val_metrics}')
             
-        torch.save(model.state_dict(), f"./models/{config['model_name']}_{langu}_epoch{epoch_num+1}.pth")
+        torch.save(model.state_dict(), f"./models/afriberta_{langu}_epoch{epoch_num+1}.pth")
                 
     dump_dict(f1_met, loss_met, langu)        
     return
