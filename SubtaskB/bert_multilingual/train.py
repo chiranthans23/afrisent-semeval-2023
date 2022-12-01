@@ -159,9 +159,9 @@ def train(langu = None):
             | Val Accuracy: {val_acc} \
             | Val Metrics (Precision, Recall, F1-Score): {val_metrics}')
             
-        torch.save(model.state_dict(), f"./models/{config['model_name']}_{langu}_epoch{epoch_num+1}.pth")
+        torch.save(model.state_dict(), f"./models/{config['model_name']}_cased_{langu}_epoch{epoch_num+1}.pth")
                 
-    dump_dict(f1_met, loss_met, langu)        
+    dump_dict(f1_met, loss_met, '_cased_'+langu)        
     return
 
 if __name__ == '__main__':

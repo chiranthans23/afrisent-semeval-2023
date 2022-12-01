@@ -9,7 +9,7 @@ config = {
     "batch_size": 64,
     "learning_rate": 4e-5,
     "optimizer": optim.AdamW,
-    'model_name': 'bert-base-multilingual-uncased',
+    'model_name': 'bert-base-multilingual-cased',
     'folds': 5,
     'seed':42,
     'scheduler': torch.optim.lr_scheduler.OneCycleLR,
