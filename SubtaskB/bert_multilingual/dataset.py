@@ -4,6 +4,8 @@ from config import config
 import pandas as pd
 
 from sklearn.model_selection import train_test_split
+
+
 class AfriSentiDataset(torch.utils.data.Dataset):
     '''
         Holds the dataset and also does the tokenization part
@@ -23,7 +25,9 @@ class AfriSentiDataset(torch.utils.data.Dataset):
         text = data_row.text
 
         #print(f"label: {data_row.label}, int: {self.labels[data_row.label]}")
-        label = self.labels[data_row.label]
+        label = 1
+        if 'label' in data_row:
+            label = self.labels[data_row.label]
 
         encoding = self.tokenizer.encode_plus(
         text,

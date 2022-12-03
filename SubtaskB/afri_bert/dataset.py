@@ -21,7 +21,9 @@ class AfriSentiDataset(torch.utils.data.Dataset):
         data_row = self.df.iloc[index]
 
         text = data_row.text
-        label = self.labels[data_row.label]
+        label = 1
+        if 'label' in data_row:
+            label = self.labels[data_row.label]
 
         encoding = self.tokenizer.encode_plus(
         text,
