@@ -23,8 +23,19 @@ def train(langu = None):
     if not langu:
         langu = 'all'
 
-    train_data = pd.read_csv(file, sep='\t', names=['text', 'label'], header=0)
-    
+    #train_data = pd.read_csv(file, sep='\t', names=['text', 'label'], header=0)
+    result = pd.DataFrame()
+    languages = ['am', 'dz', 'ha', 'ig', 'kr', 'ma', 'pcm', 'pt', 'sw', 'ts', 'yo']
+
+    for language in languages:
+        df = pd.read_csv(f"../../SubtaskA/train/{language}_train.tsv", sep='\t', names=['text', 'label'], header=0)
+        df['lang'] = language
+        if result.empty: result = df
+        else: result = pd.concat([result, df])
+
+
+    #train_data = train_data[:100]
+    train_data = result
     #train_data = train_data[:100]
 
     # skf = StratifiedKFold(n_splits=config['folds'], shuffle=True, random_state=config['seed'])
@@ -158,9 +169,9 @@ def train(langu = None):
             | Val Accuracy: {val_acc} \
             | Val Metrics (Precision, Recall, F1-Score): {val_metrics}')
             
-        torch.save(model.state_dict(), f"./models/afriberta_{langu}_epoch{epoch_num+1}.pth")
+        torch.save(model.state_dict(), f"./models/afriberta_{langu}-twi_epoch{epoch_num+1}.pth")
                 
-    dump_dict(f1_met, loss_met, langu)        
+    dump_dict(f1_met, loss_met, f"{langu}-twi")        
     return
 
 if __name__ == '__main__':

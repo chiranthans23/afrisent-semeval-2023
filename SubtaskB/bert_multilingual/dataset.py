@@ -25,11 +25,12 @@ class AfriSentiDataset(torch.utils.data.Dataset):
         text = data_row.text
 
         #print(f"label: {data_row.label}, int: {self.labels[data_row.label]}")
-        label = 1
-        if 'label' in data_row:
-            label = self.labels[data_row.label]
+        # label = 1
+        # if 'label' in data_row:
+        #     label = self.labels[data_row.label]
 
-        encoding = self.tokenizer.encode_plus(
+        label = self.labels[data_row.label]
+        encoding = self.tokenizer.encode_plus(  
         text,
         add_special_tokens=True,
         max_length=self.max_len,
